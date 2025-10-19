@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -32,7 +33,12 @@ namespace projekt
         bool isPlaylistOpen = false;
         bool isSliding = false;
         bool isFullscreen = false;
+
+        bool mouseOverControllerPanel = false;
+        bool isAnimating = false;
+
         double actualWidth, actualHeight;
+
         List<Uri> playlistItems = new List<Uri>();
 
         string[] audioFormats = new string[3] {"mp3","wav","ogg"};
@@ -425,6 +431,50 @@ namespace projekt
         }
         #endregion
 
+        private void controllerPanel_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (isFullscreen)
+            {
+                mouseOverControllerPanel = true;
+                showControllerPanel();
+            }
+        }
+
+        private void controllerPanel_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (isFullscreen)
+            {
+                mouseOverControllerPanel = false;
+                startHidingControllerPanel();
+            }
+        }
+
+        private async void startHidingControllerPanel()
+        {
+            await Task.Delay(3000);
+            if (!mouseOverControllerPanel) hideControllerPanel();
+        }
+
+        private void showControllerPanel()
+        {
+            if (isAnimating || !isFullscreen) return;
+            isAnimating = true;
+
+            var fadeIn = new DoubleAnimation(1, TimeSpan.FromMilliseconds(200));
+            fadeIn.Completed += (s, e) => isAnimating = false;
+            controllerPanel.BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        private void hideControllerPanel()
+        {
+            if (isAnimating || !isFullscreen) return;
+            isAnimating = true;
+
+            var fadeIn = new DoubleAnimation(0, TimeSpan.FromMilliseconds(200));
+            fadeIn.Completed += (s, e) => isAnimating = false;
+            controllerPanel.BeginAnimation(OpacityProperty, fadeIn);
+        }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Dictionary<string, int> playbackSeconds = new Dictionary<string, int> { { "J", 10 }, { "Left", 5 }, { "L", 10 }, { "Right", 5 } };
@@ -498,9 +548,9 @@ namespace projekt
                         mediaPlayer.Width = Width-20;
                         mediaPlayer.Height = Height-20;
                         menuStrip.Visibility = Visibility.Collapsed;
-                        controllerPanel.Visibility = Visibility.Collapsed;
                         playlistPanel.Visibility = Visibility.Collapsed;
                         removeMediaButton.Visibility = Visibility.Collapsed;
+                        controllerPanel.Opacity = 0;
                         isFullscreen = !isFullscreen;
                         Resources["themeColor_background"] = Colors.Black;
                     }
@@ -513,7 +563,10 @@ namespace projekt
                         mediaPlayer.ClearValue(FrameworkElement.WidthProperty);
                         mediaPlayer.ClearValue(FrameworkElement.HeightProperty);
                         menuStrip.Visibility = Visibility.Visible;
-                        controllerPanel.Visibility = Visibility.Visible;
+                        controllerPanel.BeginAnimation(UIElement.OpacityProperty, null);
+                        controllerPanel.Opacity = 1;
+                        isAnimating = false;
+                        mouseOverControllerPanel = false;
                         if (isPlaylistOpen)
                         {
                             playlistPanel.Visibility = Visibility.Visible;

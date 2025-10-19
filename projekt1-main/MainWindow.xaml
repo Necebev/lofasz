@@ -163,7 +163,7 @@
         <StackPanel x:Name="playlistPanel" Focusable="False" Width="200" Visibility="Hidden" Margin="0,20,0,20" HorizontalAlignment="Left" Panel.ZIndex="2" Opacity="0.95" Background="{DynamicResource ThemeColor_background}"/>
         <Button x:Name="removeMediaButton" Width="200" Height="20" Opacity="0.95" Visibility="Hidden" Click="removeFromPlaylist" Content="Törlés" Panel.ZIndex="2" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" BorderThickness="0" Background="{DynamicResource ThemeColor_background}" Foreground="{DynamicResource ThemeColor_text}"/>
         <MediaElement Margin="0,20,0,0" VerticalAlignment="Center" Stretch="Uniform" Volume="0.05" LoadedBehavior="Manual" x:Name="mediaPlayer"/>
-        <StackPanel Focusable="False" Grid.Row="1" Background="{DynamicResource ThemeColor_menustrip}" x:Name="controllerPanel">
+        <StackPanel Focusable="False" Grid.Row="1" Background="{DynamicResource ThemeColor_menustrip}" x:Name="controllerPanel" MouseEnter="controllerPanel_MouseEnter" MouseLeave="controllerPanel_MouseLeave">
             <DockPanel Width="Auto">
                 <Label x:Name="timeLabel" Width="110" Content="00:00:00/00:00:00" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor_text}"/>
                 <ProgressBar x:Name="mediaPlayerProgress" 
