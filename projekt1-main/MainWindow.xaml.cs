@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.SqlServer.Server;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +29,7 @@ namespace projekt
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool isPlaying;
+        bool isPlaying, isAudioFormat;
         bool isLoopOn = false;
         bool isPlaylistOpen = false;
         bool isSliding = false;
@@ -41,7 +42,7 @@ namespace projekt
 
         List<Uri> playlistItems = new List<Uri>();
 
-        string[] audioFormats = new string[3] {"mp3","wav","ogg"};
+        string[] audioFormats = new string[3] { "mp3", "wav", "ogg" };
         int selectedMediaIndex = -1;
         double volume = 50;
 
@@ -92,6 +93,7 @@ namespace projekt
         {
             if (audioFormats.Contains(format))
             {
+                isAudioFormat = true;
                 SizeToContent = SizeToContent.Manual;
                 Width = 300;
                 Height = 400;
@@ -100,6 +102,7 @@ namespace projekt
             }
             else
             {
+                isAudioFormat = false;
                 placeholder.Visibility = Visibility.Collapsed;
                 mediaPlayer.Visibility = Visibility.Visible;
                 while (true)
@@ -119,7 +122,7 @@ namespace projekt
         #region file handling
         private void Grid_Drop(object sender, DragEventArgs e)
         {
-            
+
             String[] FileName = (String[])e.Data.GetData(System.Windows.DataFormats.FileDrop, true);
             if (FileName.Length > 0)
             {
@@ -195,14 +198,19 @@ namespace projekt
             if (mediaPlayer.Source != null)
             {
                 mediaPlayer.Position = new TimeSpan(Convert.ToInt64(Math.Round(position.X / mediaPlayerProgress.ActualWidth, 2) * mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds * 10000)); // 10000000 = 1 sec
-                
+
                 setCurrentTimeLabelContent();
             }
         }
 
-        
+
 
         private void themebtn_Click(object sender, RoutedEventArgs e)
+        {
+            setTheme();
+        }
+
+        private void setTheme()
         {
             Color themeColor_background = (Color)FindResource("themeColor_background");
             Color themeColor_menustrip = (Color)FindResource("themeColor_menustrip");
@@ -242,10 +250,10 @@ namespace projekt
 
                 themebtn.Tag = "dark";
                 themebtn.Content = "Dark theme";
-                themeColor_background = Color.FromArgb(255, 200, 200, 200);
-                themeColor_menustrip = Color.FromArgb(255, 230, 230, 230);
-                themeColor_controllerpanel = Color.FromArgb(255, 230, 230, 230);
-                themeColor_progressbar = Colors.White;
+                themeColor_background = Color.FromArgb(255, 230, 230, 230);
+                themeColor_menustrip = Colors.White;
+                themeColor_controllerpanel = Colors.White;
+                themeColor_progressbar = Color.FromArgb(255, 230, 230, 230);
                 themeColor_text = Colors.Black;
                 placeholder.Source = new BitmapImage(new Uri(System.AppDomain.CurrentDomain.BaseDirectory + "../../play_light.png"));
                 playButton.Content = (Image)FindResource("play_light");
@@ -261,7 +269,6 @@ namespace projekt
             Resources["themeColor_controllerpanel"] = themeColor_controllerpanel;
             Resources["themeColor_progressbar"] = themeColor_progressbar;
             Resources["themeColor_text"] = themeColor_text;
-
         }
 
         private Color GetComplementary(Color color)
@@ -282,10 +289,10 @@ namespace projekt
 
         private void mediaPlayerProgress_MouseMove(object sender, MouseEventArgs e)
         {
-            
+
             Point position = Mouse.GetPosition(mediaPlayerProgress);
             if (mediaPlayer.Source != null && e.LeftButton == MouseButtonState.Pressed)
-            {    
+            {
                 mediaPlayer.Position = new TimeSpan(Convert.ToInt64(Math.Round(position.X / mediaPlayerProgress.ActualWidth, 10) * mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds * 10000)); // 10000000 = 1 sec
                 mediaPlayer.Pause();
                 isPlaying = false;
@@ -295,8 +302,8 @@ namespace projekt
 
         private void mediaPlayerProgress_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (mediaPlayer.Source != null && !isPlaying && isSliding) 
-            { 
+            if (mediaPlayer.Source != null && !isPlaying && isSliding)
+            {
                 isPlaying = true;
                 isSliding = false;
                 mediaPlayer.Play();
@@ -306,18 +313,18 @@ namespace projekt
 
         private void mediaPlayerProgress_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (mediaPlayer.Source != null && !isPlaying) 
+            if (mediaPlayer.Source != null && !isPlaying)
             {
                 isPlaying = true;
                 isSliding = false;
                 mediaPlayer.Play();
-                setCurrentTimeLabelContent();   
+                setCurrentTimeLabelContent();
             }
         }
 
         private void volumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            mediaPlayer.Volume = (volumeSlider.Value/100);
+            mediaPlayer.Volume = (volumeSlider.Value / 100);
             volume = volumeSlider.Value;
         }
 
@@ -338,12 +345,12 @@ namespace projekt
             };
             btn.BorderBrush = new RadialGradientBrush
             {
-                RadiusX = 1, 
+                RadiusX = 1,
                 RadiusY = 10,
                 GradientStops = gradientStopCollection,
                 GradientOrigin = new Point(2, 0)
             };
-            
+
 
 
         }
@@ -397,6 +404,7 @@ namespace projekt
             button.Click += selectMediaFromPlaylist;
             button.Background = Brushes.Transparent;
             button.BorderThickness = new Thickness(0);
+            button.Foreground = (SolidColorBrush)FindResource("ThemeColor_text");
 
             if (indexOfItemInPlaylist(button) == -1)
             {
@@ -412,7 +420,7 @@ namespace projekt
             mediaPlayer.Source = playlistItems[selectedMediaIndex];
             string[] filePath = mediaPlayer.Source.LocalPath.Trim().Split('\\');
             setWindowSizeByFormat(filePath[filePath.Length - 1].Split('.')[filePath[filePath.Length - 1].Split('.').Length - 1]);
-            Title = filePath[filePath.Length-1];
+            Title = filePath[filePath.Length - 1];
             mediaPlayer.Position = new TimeSpan(0);
             mediaPlayer.Play();
         }
@@ -554,9 +562,9 @@ namespace projekt
                         volumeSlider.Value = volume;
                     }
                 }
-                if (e.Key.ToString() == "F")
+                if (e.Key.ToString() == "F" && !isAudioFormat)
                 {
-                    if (!isFullscreen && mediaPlayer.HasVideo)
+                    if (!isFullscreen)
                     {
                         mediaPlayer.Margin = new Thickness(0);
                         WindowStyle = WindowStyle.None;
@@ -567,14 +575,21 @@ namespace projekt
                         playlistPanel.Visibility = Visibility.Collapsed;
                         removeMediaButton.Visibility = Visibility.Collapsed;
                         controllerPanel.Opacity = 0;
-                        controllerPanel.Background.Opacity = 0.6;
+                        controllerPanel.Background = new LinearGradientBrush(Color.FromArgb(0,0,0,0), Color.FromArgb(255, 0, 0, 0), 90);
+                        controllerPanel.Height += 5;
+                        stackPanel.Margin = new Thickness((Width-stackPanel.Width)/2-5,0,0,0);
                         isFullscreen = !isFullscreen;
                         Resources["themeColor_background"] = Colors.Black;
+                        if (themebtn.Tag.ToString() == "dark")
+                        {
+                            setTheme();
+                            themebtn.Tag = "dark";
+                        }
                     }
                     else
                     {
                         
-                        mediaPlayer.Margin = new Thickness(0,20,0,80);
+                        mediaPlayer.Margin = new Thickness(0, 20, 0, 80);
                         WindowStyle = WindowStyle.ThreeDBorderWindow;
                         WindowState = WindowState.Normal;
                         mediaPlayer.ClearValue(FrameworkElement.WidthProperty);
@@ -582,7 +597,8 @@ namespace projekt
                         menuStrip.Visibility = Visibility.Visible;
                         controllerPanel.BeginAnimation(UIElement.OpacityProperty, null);
                         controllerPanel.Opacity = 1;
-                        controllerPanel.Background.Opacity = 1;
+                        controllerPanel.Height -= 5;
+                        stackPanel.Margin = new Thickness(0);
                         isAnimating = false;
                         mouseOverControllerPanel = false;
                         if (isPlaylistOpen)
@@ -590,17 +606,19 @@ namespace projekt
                             playlistPanel.Visibility = Visibility.Visible;
                             removeMediaButton.Visibility = Visibility.Visible;
                         }
-                        
+
                         isFullscreen = !isFullscreen;
                         if (themebtn.Tag.ToString() == "light")
                         {
                             Resources["themeColor_background"] = Color.FromArgb(255, 10, 10, 10);
+                            
                         }
                         else
                         {
-                            Resources["themeColor_background"] = Color.FromArgb(255, 200, 200, 200);
+                            themebtn.Tag = "light";
+                            setTheme();
                         }
-                        
+                        controllerPanel.Background = (SolidColorBrush)FindResource("ThemeColor_controllerpanel");
                     }
                 }
                 if (e.Key.ToString() == "Delete")
