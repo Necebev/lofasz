@@ -43,6 +43,7 @@ namespace projekt
 
         string[] audioFormats = new string[3] {"mp3","wav","ogg"};
         int selectedMediaIndex = -1;
+        double volume = 50;
 
         public MainWindow()
         {
@@ -95,15 +96,13 @@ namespace projekt
                 Width = 300;
                 Height = 400;
                 mediaPlayer.Visibility = Visibility.Collapsed;
-                Image image = new Image()
-                {
-                    Source = new BitmapImage(new Uri("C:\\Users\\asd\\Desktop\\lofaz\\projekt1-main\\play_light.png")),
-                    Width = mediaPlayer.Width,
-                    Height = mediaPlayer.Height
-                };
+                placeholder.Width = mediaPlayer.Width;
+                placeholder.Height = mediaPlayer.Height;
+                placeholder.Visibility = Visibility.Visible;
             }
             else
             {
+                placeholder.Visibility = Visibility.Collapsed;
                 while (true)
                 {
                     if (mediaPlayer.NaturalVideoHeight != 0)
@@ -318,6 +317,7 @@ namespace projekt
         private void volumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             mediaPlayer.Volume = (volumeSlider.Value/100);
+            volume = volumeSlider.Value;
         }
 
         private void closebtn_Click(object sender, RoutedEventArgs e)
@@ -538,6 +538,21 @@ namespace projekt
                 {
                     volumeSlider.Value -= 5;
                 }
+                if (e.Key.ToString() == "M")
+                {
+                    if (mediaPlayer.Volume > 0)
+                    {
+                        double value = volumeSlider.Value;
+                        mediaPlayer.Volume = 0;
+                        volumeSlider.Value = 0;
+                        volume = value;
+                    }
+                    else
+                    {
+                        mediaPlayer.Volume = (volume / 100);
+                        volumeSlider.Value = volume;
+                    }
+                }
                 if (e.Key.ToString() == "F")
                 {
                     if (!isFullscreen)
@@ -545,8 +560,8 @@ namespace projekt
                         mediaPlayer.Margin = new Thickness(0);
                         WindowStyle = WindowStyle.None;
                         WindowState = WindowState.Maximized;
-                        mediaPlayer.Width = Width-20;
-                        mediaPlayer.Height = Height-20;
+                        mediaPlayer.Width = Width;
+                        mediaPlayer.Height = Height;
                         menuStrip.Visibility = Visibility.Collapsed;
                         playlistPanel.Visibility = Visibility.Collapsed;
                         removeMediaButton.Visibility = Visibility.Collapsed;
@@ -557,7 +572,7 @@ namespace projekt
                     else
                     {
                         
-                        mediaPlayer.Margin = new Thickness(0,20,0,0);
+                        mediaPlayer.Margin = new Thickness(0,20,0,80);
                         WindowStyle = WindowStyle.ThreeDBorderWindow;
                         WindowState = WindowState.Normal;
                         mediaPlayer.ClearValue(FrameworkElement.WidthProperty);

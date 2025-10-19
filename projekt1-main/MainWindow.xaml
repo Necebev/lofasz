@@ -148,10 +148,6 @@
     </Window.Resources>
 
     <Grid Background="{DynamicResource ThemeColor_background}" AllowDrop="True" Drop="Grid_Drop" x:Name="grid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
         <WrapPanel Height="20" VerticalAlignment="Top" Background="{DynamicResource ThemeColor_menustrip}" x:Name="menuStrip">
             <Button x:Name="filebtn"        Background="Transparent"    Foreground="{DynamicResource ThemeColor_text}"  Content="File"          Click="filebtn_Click"       BorderThickness="0"     Margin="3,0,10,0" />
             <Button x:Name="playlistbtn"    Background="Transparent"    Foreground="{DynamicResource ThemeColor_text}"  Content="Playlist"      Click="playlistbtn_Click"   BorderThickness="0" />
@@ -162,11 +158,13 @@
         </WrapPanel>
         <StackPanel x:Name="playlistPanel" Focusable="False" Width="200" Visibility="Hidden" Margin="0,20,0,20" HorizontalAlignment="Left" Panel.ZIndex="2" Opacity="0.95" Background="{DynamicResource ThemeColor_background}"/>
         <Button x:Name="removeMediaButton" Width="200" Height="20" Opacity="0.95" Visibility="Hidden" Click="removeFromPlaylist" Content="Törlés" Panel.ZIndex="2" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" BorderThickness="0" Background="{DynamicResource ThemeColor_background}" Foreground="{DynamicResource ThemeColor_text}"/>
-        <MediaElement Margin="0,20,0,0" VerticalAlignment="Center" Stretch="Uniform" Volume="0.05" LoadedBehavior="Manual" x:Name="mediaPlayer"/>
-        <StackPanel Focusable="False" Grid.Row="1" Background="{DynamicResource ThemeColor_menustrip}" x:Name="controllerPanel" MouseEnter="controllerPanel_MouseEnter" MouseLeave="controllerPanel_MouseLeave">
+        <MediaElement Margin="0,20,0,80" VerticalAlignment="Center" Stretch="Uniform" Volume="0.05" LoadedBehavior="Manual" x:Name="mediaPlayer"/>
+        <Image x:Name="placeholder" Panel.ZIndex="2" Visibility="Collapsed" Source="play_light.png" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,0"/>
+        <StackPanel VerticalAlignment="Bottom" Focusable="False" Background="{DynamicResource ThemeColor_menustrip}" x:Name="controllerPanel" MouseEnter="controllerPanel_MouseEnter" MouseLeave="controllerPanel_MouseLeave">
             <DockPanel Width="Auto">
                 <Label x:Name="timeLabel" Width="110" Content="00:00:00/00:00:00" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor_text}"/>
-                <ProgressBar x:Name="mediaPlayerProgress" 
+                <ProgressBar x:Name="mediaPlayerProgress"
+                             Focusable="False"
                              Foreground="{DynamicResource Gradient}" 
                              Background="{DynamicResource ThemeColor_progressbar}" 
                              BorderThickness="0" Height="15" Margin="0,10,10,10" Width="Auto" VerticalAlignment="Center" MouseDown="mediaPlayerProgress_MouseDown" MouseMove="mediaPlayerProgress_MouseMove" MouseLeave="mediaPlayerProgress_MouseLeave" MouseUp="mediaPlayerProgress_MouseUp"/>
