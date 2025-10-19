@@ -25,7 +25,7 @@
 
         <Color x:Key="themeColor_background" R="230" G="230" B="230" A="255"/>
         <Color x:Key="themeColor_menustrip" R="255" G="255" B="255" A="255"/>
-        <Color x:Key="themeColor_controllerpanel" R="230" G="230" B="230" A="255"/>
+        <Color x:Key="themeColor_controllerpanel" R="255" G="255" B="255" A="255"/>
         <Color x:Key="themeColor_progressbar" R="240" G="240" B="240" A="255"/>
         <Color x:Key="themeColor_text" R="0" G="0" B="0" A="255"/>
 
@@ -122,13 +122,13 @@
                 </Grid.RowDefinitions>
                 <Track Grid.Row="1" x:Name="PART_Track"   >
                     <Track.DecreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
+                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" Focusable="False"/>
                     </Track.DecreaseRepeatButton>
                     <Track.Thumb>
                         <Thumb Style="{StaticResource SliderThumb}"  />
                     </Track.Thumb>
                     <Track.IncreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" />
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" Focusable="False"/>
                     </Track.IncreaseRepeatButton>
                 </Track>
             </Grid>
@@ -159,7 +159,7 @@
         <StackPanel x:Name="playlistPanel" Focusable="False" Width="200" Visibility="Hidden" Margin="0,20,0,20" HorizontalAlignment="Left" Panel.ZIndex="2" Opacity="0.95" Background="{DynamicResource ThemeColor_background}"/>
         <Button x:Name="removeMediaButton" Width="200" Height="20" Opacity="0.95" Visibility="Hidden" Click="removeFromPlaylist" Content="Törlés" Panel.ZIndex="2" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" BorderThickness="0" Background="{DynamicResource ThemeColor_background}" Foreground="{DynamicResource ThemeColor_text}"/>
         <MediaElement Margin="0,20,0,80" VerticalAlignment="Center" Stretch="Uniform" Volume="0.05" LoadedBehavior="Manual" x:Name="mediaPlayer"/>
-        <Image x:Name="placeholder" Panel.ZIndex="2" Visibility="Collapsed" Source="play_light.png" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,0"/>
+        <Image x:Name="placeholder" Width="50" Height="50" Source="play_light.png" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,80"/>
         <StackPanel VerticalAlignment="Bottom" Focusable="False" Background="{DynamicResource ThemeColor_menustrip}" x:Name="controllerPanel" MouseEnter="controllerPanel_MouseEnter" MouseLeave="controllerPanel_MouseLeave">
             <DockPanel Width="Auto">
                 <Label x:Name="timeLabel" Width="110" Content="00:00:00/00:00:00" VerticalAlignment="Center" Foreground="{DynamicResource ThemeColor_text}"/>
@@ -170,7 +170,7 @@
                              BorderThickness="0" Height="15" Margin="0,10,10,10" Width="Auto" VerticalAlignment="Center" MouseDown="mediaPlayerProgress_MouseDown" MouseMove="mediaPlayerProgress_MouseMove" MouseLeave="mediaPlayerProgress_MouseLeave" MouseUp="mediaPlayerProgress_MouseUp"/>
             </DockPanel>
             <DockPanel Margin="2,0,0,4" Width="Auto">
-                <Button x:Name="playButton"     Background="Transparent" Foreground="{DynamicResource ThemeColor_text}" 
+                <Button x:Name="playButton"     Background="{DynamicResource ThemeColor_menustrip}" Foreground="{DynamicResource ThemeColor_text}" 
                         BorderBrush="{DynamicResource Gradient}" BorderThickness="3"
                         Width="40" Height="40" Margin="5,0,0,0"  
                         Click="playButton_Click"    MouseEnter="mouseEnter"     
@@ -184,7 +184,7 @@
                     
                 </Button>
 
-                <Button x:Name="pauseButton"    Background="Transparent" Foreground="{DynamicResource ThemeColor_text}" 
+                <Button x:Name="pauseButton"    Background="{DynamicResource ThemeColor_menustrip}" Foreground="{DynamicResource ThemeColor_text}" 
                         BorderBrush="{DynamicResource Gradient}" BorderThickness="3" 
                         Width="40" Height="40"  Click="pauseButton_Click"   
                         MouseEnter="mouseEnter"     MouseLeave="mouseLeave"     
@@ -196,7 +196,7 @@
                     </Button.Resources>
                 </Button>
 
-                <Button x:Name="stopButton"     Background="Transparent" Foreground="{DynamicResource ThemeColor_text}" 
+                <Button x:Name="stopButton"     Background="{DynamicResource ThemeColor_menustrip}" Foreground="{DynamicResource ThemeColor_text}" 
                         BorderBrush="{DynamicResource Gradient}" BorderThickness="3" 
                         Width="40" Height="40"  Click="stopButton_Click"    
                         MouseEnter="mouseEnter"     MouseLeave="mouseLeave"

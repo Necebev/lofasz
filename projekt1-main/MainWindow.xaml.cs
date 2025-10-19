@@ -96,13 +96,12 @@ namespace projekt
                 Width = 300;
                 Height = 400;
                 mediaPlayer.Visibility = Visibility.Collapsed;
-                placeholder.Width = mediaPlayer.Width;
-                placeholder.Height = mediaPlayer.Height;
                 placeholder.Visibility = Visibility.Visible;
             }
             else
             {
                 placeholder.Visibility = Visibility.Collapsed;
+                mediaPlayer.Visibility = Visibility.Visible;
                 while (true)
                 {
                     if (mediaPlayer.NaturalVideoHeight != 0)
@@ -228,6 +227,7 @@ namespace projekt
                 themeColor_controllerpanel = Color.FromArgb(255, 23, 23, 23);
                 themeColor_progressbar = themeColor_background;
                 themeColor_text = Colors.White;
+                placeholder.Source = new BitmapImage(new Uri(System.AppDomain.CurrentDomain.BaseDirectory + "../../play_dark.png"));
                 playButton.Content = (Image)FindResource("play_dark");
                 pauseButton.Content = (Image)FindResource("pause_dark");
                 stopButton.Content = (Image)FindResource("stop_dark");
@@ -247,6 +247,7 @@ namespace projekt
                 themeColor_controllerpanel = Color.FromArgb(255, 230, 230, 230);
                 themeColor_progressbar = Colors.White;
                 themeColor_text = Colors.Black;
+                placeholder.Source = new BitmapImage(new Uri(System.AppDomain.CurrentDomain.BaseDirectory + "../../play_light.png"));
                 playButton.Content = (Image)FindResource("play_light");
                 pauseButton.Content = (Image)FindResource("pause_light");
                 stopButton.Content = (Image)FindResource("stop_light");
@@ -555,7 +556,7 @@ namespace projekt
                 }
                 if (e.Key.ToString() == "F")
                 {
-                    if (!isFullscreen)
+                    if (!isFullscreen && mediaPlayer.HasVideo)
                     {
                         mediaPlayer.Margin = new Thickness(0);
                         WindowStyle = WindowStyle.None;
@@ -566,6 +567,7 @@ namespace projekt
                         playlistPanel.Visibility = Visibility.Collapsed;
                         removeMediaButton.Visibility = Visibility.Collapsed;
                         controllerPanel.Opacity = 0;
+                        controllerPanel.Background.Opacity = 0.6;
                         isFullscreen = !isFullscreen;
                         Resources["themeColor_background"] = Colors.Black;
                     }
@@ -580,6 +582,7 @@ namespace projekt
                         menuStrip.Visibility = Visibility.Visible;
                         controllerPanel.BeginAnimation(UIElement.OpacityProperty, null);
                         controllerPanel.Opacity = 1;
+                        controllerPanel.Background.Opacity = 1;
                         isAnimating = false;
                         mouseOverControllerPanel = false;
                         if (isPlaylistOpen)
